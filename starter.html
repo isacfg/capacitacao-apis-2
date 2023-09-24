@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Petite Vue - EJECT</title>
+	
+		<!-- daisyUi (biblioteca) -->
+		<link
+			href="https://cdn.jsdelivr.net/npm/daisyui@3.6.1/dist/full.css"
+			rel="stylesheet"
+			type="text/css"
+		/>
+		<!-- tailwindcss -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- vue -->
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+		<!-- API -->
+	 <!-- https://itunes.apple.com/search?term={TERMO DE BUSCA}&entity=album -->
+
+
+	</head>
+
+	<body>
+
+		<div id="appMusicas" class="container mx-auto mt-14">
+			<div class="flex flex-col items-center justify-center mt-10 w-full">
+				<h3 class="text-2xl bold">Buscador de músicas</h3>
+				
+
+				<form class="flex flex-col gap-y-4 mt-4">
+					<input
+					v-model="valorBusca"
+						type="text"
+						class="input input-bordered w-full max-w-xs"
+					/>
+
+					<button
+					@click.prevent="fetchMusicas"
+						class="btn border-none btn-primary bg-black text-white hover:bg-black hover:text-white"
+					>
+						Buscar
+					</button>
+				</form>
+			</div>
+
+			<!-- musicas -->
+			<div class="grid grid-cols-3 gap-6 mt-5">
+				<div
+				v-for="album in resultados"
+					class="flex flex-col items-center shadow border-2 p5 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+				>
+
+
+				<a :href="album.artistViewUrl
+				" target="_blank" class="flex flex-col items-center">
+					<h3 class="font-bold text-xl">
+						{{ album.collectionName }}
+					</h3>
+					<img :src="album.artworkUrl100" class="w-52 mt-5" alt="">
+				</a>
+					
+				</div>
+			</div>
+		</div>
+
+  <script>
+
+		const {createApp} = Vue
+    
+		createApp({
+			data() {
+				return {
+					// variaveis
+					valorBusca: '',
+					resultados: ''
+				}
+			},
+			methods: {
+				// funções
+				//  https://itunes.apple.com/search?term={TERMO DE BUSCA}&entity=album
+
+				async fetchMusicas() {
+					const buscaApi = await fetch(
+						`
+						https://itunes.apple.com/search?term=${this.valorBusca}&entity=album
+						`
+					)
+					const res = await buscaApi.json()
+					console.log(res)
+					this.resultados = res.results
+				}
+			}
+		}).mount('#appMusicas')
+
+
+  </script>
+
+	</body>
+</html>
